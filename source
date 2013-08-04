@@ -1,0 +1,116 @@
+/* zhada.cpp
+*  guzhaolun
+*  2013-08-04
+*/
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <stdlib.h>
+#include <map>
+using namespace std;
+
+int main()
+{
+  map<string,double> map_roles;
+  ofstream ofile("output.txt",ios::out);
+  ofile<<"1120742987@qq.com\n"<<endl;
+  ifstream ifile("input.txt",ios::in);
+  ifstream input("input.txt",ios::in);
+  if(ifile.fail())
+  {
+       cout << "open file error" << endl;
+       return -1;
+  }
+  int base=0;
+  string type;
+  char equal;
+  double tranfer;
+  char m;
+  
+    while( ifile>>base>>type>>equal>>tranfer>>m)
+    {
+  	cout<<base<<type<<tranfer;
+		map_roles.insert(map<string , double >::value_type (type , tranfer/base));
+    }
+
+    map<string , double> :: iterator iter_roles;
+    cout<<endl<<endl;
+    for(iter_roles=map_roles.begin();iter_roles!=map_roles.end();iter_roles++)
+    {
+      cout<<iter_roles->first<<"  "<<iter_roles->second<<endl;
+    }
+  
+    char *cValue = new char[255];
+	for(int i=0;i<8;i++)
+	{
+		input.getline(cValue,255,'\n');
+		cout<<cValue<<endl;
+	}
+
+    while(!input.fail()) 
+    {
+      double result=0;
+	  string str(cValue);
+      char plusOrMinus;
+	  do{
+		  double numbersTemp=0;
+		  string types;
+	   
+		  plusOrMinus=str.substr(str.find_first_not_of(' '))[0];
+	 
+		  string temp;
+		  if(str[0]=='+'||str[0]=='-')
+			  temp=str.substr(2);
+		  else
+			  temp=str;
+		  int a=temp.find_first_of(' ');
+		  numbersTemp=atof(temp.substr(0,a).c_str());
+		  string temp2=temp.substr(a+1);
+		  int b=temp2.find_first_of(' ');
+
+		  string temp3;
+		  if(b>0)
+		  {
+				types=temp2.substr(0,b);
+				temp3=temp2.substr(b+1);
+		  }
+		  else
+			  {
+				  types=temp2.substr(0);
+					temp3="";
+			  }
+	 
+		  str=temp3;
+		  if(numbersTemp>1)
+				 if(types=="inches")
+					 types=types.substr(0,types.length()-2);
+				 else if(types=="feet")
+					 types="foot";
+				 else
+					 types=types.substr(0,types.length()-1);
+		 switch(char(plusOrMinus))
+		  {
+		  case '+':
+			  result+=map_roles.find(types)->second*numbersTemp;
+				break;
+		  case '-':
+			  result-=map_roles.find(types)->second*numbersTemp;
+				break;
+		  default:
+			  result=map_roles.find(types)->second*numbersTemp;
+	
+		  }
+		 if(str.length()<=0)
+			ofile<<setprecision(2) <<std::fixed <<result<<" m"<<endl;
+		}while(str.length()>0);
+
+		input.getline(cValue,255,'\n');
+	  
+		cout<<cValue<<endl;
+     }
+
+	system("pause");
+	return 0;
+}
